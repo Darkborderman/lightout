@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/black_bullet.png</file>
+	<file>res/images/lightoff.png</file>
+	<file>res/images/lighton.png</file>
+    </qresource>
+</RCC>

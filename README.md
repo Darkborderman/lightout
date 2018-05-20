@@ -1,1 +1,1 @@
-# lightout
+# Game-template
