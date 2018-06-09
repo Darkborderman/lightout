@@ -18,20 +18,25 @@ var marker;
 var currentTile;
 var cursors;
 
+let Tiles={};
+
 function create() {
 
     map = game.add.tilemap('map');
 
     map.addTilesetImage('tileset');
 
-    currentTile = map.getTile(1, 0,'tileLayer');
+    Tiles.light=map.getTile(1, 0,'tileLayer');
+    Tiles.dark=map.getTile(0,0,'tileLayer');
+
+    currentTile=Tiles.dark;
 
     layer = map.createLayer('layer1');
 
     layer.resizeWorld();
 
     marker = game.add.graphics();
-    marker.lineStyle(2, 0x000000, 1);
+    marker.lineStyle(2, 0x888888, 1);
     marker.drawRect(0, 0, 8, 8);
 
     cursors = game.input.keyboard.createCursorKeys();
@@ -40,23 +45,18 @@ function create() {
 
 function update() {
 
-    if (game.input.mousePointer.isDown)
-    {
-        if (game.input.keyboard.isDown(Phaser.Keyboard.SHIFT))
-        {
-            currentTile = map.getTile(layer.getTileX(marker.x), layer.getTileY(marker.y));
-        }
-        else
-        {
-            if (map.getTile(layer.getTileX(marker.x), layer.getTileY(marker.y)).index != currentTile.index)
-            {
-                map.putTile(currentTile, layer.getTileX(marker.x), layer.getTileY(marker.y));
-            }
-        }
-    }
 }
 
 function render() {}
+
+function detect(map)
+{
+    let counter=0;
+    map.forEach(function(tile){
+        if(tile.index==3) counter++;
+    })
+    if(counter==0) console.log('you win');
+}
 
 document.addEventListener("DOMContentLoaded",function(){
 
@@ -74,16 +74,20 @@ document.addEventListener("DOMContentLoaded",function(){
                     aroundtiles[i*3+j]=map.getTile(layer.getTileX(marker.x-8+j*8),layer.getTileY(marker.y-8+i*8));
                 }
             }
-            console.log(aroundtiles);
+
             for(let i=0;i<=2;i++)
             {
                 for(let j=0;j<=2;j++)
                 {
-                    map.putTile(currentTile,layer.getTileX(marker.x-8+j*8),layer.getTileY(marker.y-8+i*8));
+                    if(aroundtiles[i*3+j].index==3)
+                        map.putTile(Tiles.light,layer.getTileX(marker.x-8+j*8),layer.getTileY(marker.y-8+i*8));
+                    else if(aroundtiles[i*3+j].index==4)
+                        map.putTile(Tiles.dark,layer.getTileX(marker.x-8+j*8),layer.getTileY(marker.y-8+i*8));
+
                 }
             }
+            detect(map);
         }
-        console.log(e);
     });
 
 });
